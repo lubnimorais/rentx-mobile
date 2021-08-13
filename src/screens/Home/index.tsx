@@ -6,10 +6,10 @@ import Logo from '../../assets/logo.svg';
 
 import { Car } from '../../components/Car';
 
-import { Container, Header, HeaderContent, TotalCars } from './styles';
+import { Container, Header, HeaderContent, TotalCars, CarList } from './styles';
 
 const Home: React.FC = () => {
-  const carDataOne = {
+  const carData = {
     brand: 'AUDI',
     name: 'RS 5 Coupé',
     rent: {
@@ -46,18 +46,17 @@ const Home: React.FC = () => {
         </HeaderContent>
       </Header>
 
-      <Car
-        brand={carDataOne.brand}
-        name={carDataOne.name}
-        rent={carDataOne.rent}
-        thumbnail={carDataOne.thumbnail}
-      />
-
-      <Car
-        brand={carDataTwo.brand}
-        name={carDataTwo.name}
-        rent={carDataTwo.rent}
-        thumbnail={carDataTwo.thumbnail}
+      <CarList
+        data={[carData]}
+        keyExtractor={item => item.name}
+        renderItem={({ item: car }) => (
+          <Car
+            brand={car.brand}
+            name={car.name}
+            rent={car.rent}
+            thumbnail={car.thumbnail}
+          />
+        )}
       />
     </Container>
   );

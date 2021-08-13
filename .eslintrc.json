@@ -33,6 +33,7 @@
     "camelcase": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "react/prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [
       1,
       {
