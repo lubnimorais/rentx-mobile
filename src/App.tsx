@@ -15,7 +15,7 @@ import {
 
 import theme from './styles/theme';
 
-import { CarDetails } from './screens/CarDetails';
+import { Routes } from './routes';
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <CarDetails />
+      <Routes />
     </ThemeProvider>
   );
 };

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StatusBar } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 import Logo from '../../assets/logo.svg';
@@ -9,6 +10,12 @@ import { Car } from '../../components/Car';
 import { Container, Header, HeaderContent, TotalCars, CarList } from './styles';
 
 const Home: React.FC = () => {
+  const navigation = useNavigation();
+
+  const handleNavigationCarDetails = useCallback(() => {
+    navigation.navigate('CarDetails');
+  }, [navigation]);
+
   const carData = {
     brand: 'AUDI',
     name: 'RS 5 Coupé',
@@ -55,6 +62,7 @@ const Home: React.FC = () => {
             name={car.name}
             rent={car.rent}
             thumbnail={car.thumbnail}
+            onPress={handleNavigationCarDetails}
           />
         )}
       />
