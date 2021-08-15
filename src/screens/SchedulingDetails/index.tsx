@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 
 import { Feather } from '@expo/vector-icons';
@@ -43,7 +44,12 @@ import {
 } from './styles';
 
 const SchedulingDetails: React.FC = () => {
+  const navigation = useNavigation();
   const theme = useTheme();
+
+  const handleNavigationSchedulingComplete = useCallback(() => {
+    navigation.navigate('SchedulingComplete');
+  }, [navigation]);
 
   return (
     <Container>
@@ -118,7 +124,11 @@ const SchedulingDetails: React.FC = () => {
       </Content>
 
       <Footer>
-        <Button title="Alugar agora" color={theme.colors.success} />
+        <Button
+          title="Alugar agora"
+          color={theme.colors.success}
+          onPress={handleNavigationSchedulingComplete}
+        />
       </Footer>
     </Container>
   );

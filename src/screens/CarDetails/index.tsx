@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider';
@@ -30,6 +31,12 @@ import {
 } from './styles';
 
 const CarDetails: React.FC = () => {
+  const navigation = useNavigation();
+
+  const handleSchedulingNavigation = useCallback(() => {
+    navigation.navigate('Scheduling');
+  }, [navigation]);
+
   return (
     <Container>
       <Header>
@@ -75,7 +82,10 @@ const CarDetails: React.FC = () => {
       </Content>
 
       <Footer>
-        <Button title="Salvar" />
+        <Button
+          title="Escolher período do aluguel"
+          onPress={handleSchedulingNavigation}
+        />
       </Footer>
     </Container>
   );

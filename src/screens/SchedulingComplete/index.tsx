@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StatusBar, useWindowDimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import LogoSvg from '../../assets/logo_background_gray.svg';
 import DoneSvg from '../../assets/done.svg';
@@ -10,6 +11,12 @@ import { Container, Content, Title, Message, Footer } from './styles';
 
 const SchedulingComplete: React.FC = () => {
   const { width } = useWindowDimensions();
+
+  const navigation = useNavigation();
+
+  const handleNavigationHome = useCallback(() => {
+    navigation.navigate('Home');
+  }, [navigation]);
 
   return (
     <Container>
@@ -32,7 +39,7 @@ const SchedulingComplete: React.FC = () => {
         </Message>
 
         <Footer>
-          <ConfirmButton title="OK" />
+          <ConfirmButton title="OK" onPress={handleNavigationHome} />
         </Footer>
       </Content>
     </Container>
