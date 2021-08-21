@@ -6,6 +6,7 @@ function getPlatformDate(date: Date): Date {
     return addDays(date, 1);
   }
   return date;
+  // return addDays(date, 1); para solucionar no android também
 }
 
 export { getPlatformDate };
