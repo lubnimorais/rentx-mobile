@@ -2,26 +2,7 @@ import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-interface IRent {
-  period: string;
-  price: number;
-}
-
-interface IAccessory {
-  type: string;
-  name: string;
-}
-
-interface ICar {
-  id: string;
-  brand: string;
-  name: string;
-  about: string;
-  rent: IRent;
-  fuel_type: string;
-  thumbnail: string;
-  accessories: Array<IAccessory>;
-}
+import { ICar } from '../../dtos/ICarDTO';
 
 export const Container = styled.View`
   flex: 1;

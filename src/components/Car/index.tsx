@@ -1,7 +1,9 @@
 import React from 'react';
 import { RectButtonProps } from 'react-native-gesture-handler';
 
-import GasolineSvg from '../../assets/gasoline.svg';
+import { ICar } from '../../dtos/ICarDTO';
+
+import { getAccessoryIcon } from '../../utils/getAccessoryIcon';
 
 import {
   Container,
@@ -16,33 +18,27 @@ import {
   CarImage,
 } from './styles';
 
-interface IRent {
-  period: string;
-  price: number;
-}
-
 interface IProps extends RectButtonProps {
-  brand: string;
-  name: string;
-  rent: IRent;
-  thumbnail: string;
+  car: ICar;
 }
 
-const Car: React.FC<IProps> = ({ brand, name, rent, thumbnail, ...rest }) => {
+const Car: React.FC<IProps> = ({ car, ...rest }) => {
+  const MotorIcon = getAccessoryIcon(car.fuel_type);
+
   return (
     <Container {...rest}>
       <Details>
-        <Brand>{brand}</Brand>
-        <Name>{name}</Name>
+        <Brand>{car.brand}</Brand>
+        <Name>{car.name}</Name>
 
         <About>
           <Rent>
-            <Period>{rent.period}</Period>
-            <Price>{`R$ ${rent.price}`}</Price>
+            <Period>{car.rent.period}</Period>
+            <Price>{`R$ ${car.rent.price}`}</Price>
           </Rent>
 
           <Type>
-            <GasolineSvg />
+            <MotorIcon />
           </Type>
         </About>
       </Details>
@@ -50,7 +46,7 @@ const Car: React.FC<IProps> = ({ brand, name, rent, thumbnail, ...rest }) => {
       <CarImage
         resizeMode="contain"
         source={{
-          uri: thumbnail,
+          uri: car.thumbnail,
         }}
       />
     </Container>

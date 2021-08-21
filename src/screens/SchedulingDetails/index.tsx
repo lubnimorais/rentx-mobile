@@ -47,6 +47,10 @@ const SchedulingDetails: React.FC = () => {
   const navigation = useNavigation();
   const theme = useTheme();
 
+  const handleBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   const handleNavigationSchedulingComplete = useCallback(() => {
     navigation.navigate('SchedulingComplete');
   }, [navigation]);
@@ -54,7 +58,7 @@ const SchedulingDetails: React.FC = () => {
   return (
     <Container>
       <Header>
-        <BackButton />
+        <BackButton onPress={handleBack} />
       </Header>
 
       <CarImages>

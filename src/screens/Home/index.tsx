@@ -11,29 +11,9 @@ import Logo from '../../assets/logo.svg';
 
 import { Car } from '../../components/Car';
 
+import { ICar } from '../../dtos/ICarDTO';
+
 import { Container, Header, HeaderContent, TotalCars, CarList } from './styles';
-
-interface IRent {
-  period: string;
-  price: number;
-}
-
-interface IAccessory {
-  type: string;
-  name: string;
-}
-
-interface ICar {
-  id: string;
-  brand: string;
-  name: string;
-  about: string;
-  rent: IRent;
-  fuel_type: string;
-  thumbnail: string;
-  accessories: Array<IAccessory>;
-  photos: Array<string>;
-}
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
@@ -41,9 +21,12 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cars, setCars] = useState<ICar[]>([]);
 
-  const handleNavigationCarDetails = useCallback(() => {
-    navigation.navigate('CarDetails');
-  }, [navigation]);
+  const handleNavigationCarDetails = useCallback(
+    (car: ICar) => {
+      navigation.navigate('CarDetails', { car });
+    },
+    [navigation],
+  );
 
   const fetchCars = useCallback(async () => {
     try {
@@ -84,13 +67,7 @@ const Home: React.FC = () => {
           data={cars}
           keyExtractor={item => item.id}
           renderItem={({ item: car }) => (
-            <Car
-              brand={car.brand}
-              name={car.name}
-              rent={car.rent}
-              thumbnail={car.thumbnail}
-              onPress={handleNavigationCarDetails}
-            />
+            <Car car={car} onPress={() => handleNavigationCarDetails(car)} />
           )}
         />
       )}
