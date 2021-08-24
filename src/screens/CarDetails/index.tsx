@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { ICar } from '../../dtos/ICarDTO';
+import { ICarDTO } from '../../dtos/ICarDTO';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider';
@@ -28,7 +28,7 @@ import {
 } from './styles';
 
 interface IRouteParams {
-  car: ICar;
+  car: ICarDTO;
 }
 
 const CarDetails: React.FC = () => {

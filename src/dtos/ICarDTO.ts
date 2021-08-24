@@ -8,7 +8,7 @@ interface IAccessory {
   name: string;
 }
 
-interface ICar {
+interface ICarDTO {
   id: string;
   brand: string;
   name: string;
@@ -20,4 +20,4 @@ interface ICar {
   photos: Array<string>;
 }
 
-export { ICar };
+export { ICarDTO };

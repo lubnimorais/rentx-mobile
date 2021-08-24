@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { StatusBar, Alert } from 'react-native';
+import { StatusBar } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 
 import { format } from 'date-fns';
 
-import { ICar } from '../../dtos/ICarDTO';
+import { ICarDTO } from '../../dtos/ICarDTO';
 
 import { getPlatformDate } from '../../utils/getPlatformDate';
 
@@ -38,7 +38,7 @@ interface IRentalPeriod {
 }
 
 interface IRouteProps {
-  car: ICar;
+  car: ICarDTO;
 }
 
 const Scheduling: React.FC = () => {
@@ -63,21 +63,11 @@ const Scheduling: React.FC = () => {
   }, [navigation]);
 
   const handleNavigationSchedulingDetails = useCallback(() => {
-    if (!rentalPeriod.startFormatted || !rentalPeriod.endFormatted) {
-      Alert.alert('Selecione o intervalo para alugar');
-    } else {
-      navigation.navigate('SchedulingDetails', {
-        car,
-        dates: Object.keys(markedDates),
-      });
-    }
-  }, [
-    navigation,
-    car,
-    markedDates,
-    rentalPeriod.startFormatted,
-    rentalPeriod.endFormatted,
-  ]);
+    navigation.navigate('SchedulingDetails', {
+      car,
+      dates: Object.keys(markedDates),
+    });
+  }, [navigation, car, markedDates]);
 
   const handleChangeDate = useCallback(
     (date: IDayProps) => {
@@ -147,7 +137,11 @@ const Scheduling: React.FC = () => {
       </Content>
 
       <Footer>
-        <Button title="Confirmar" onPress={handleNavigationSchedulingDetails} />
+        <Button
+          title="Confirmar"
+          enabled={!!rentalPeriod.endFormatted}
+          onPress={handleNavigationSchedulingDetails}
+        />
       </Footer>
     </Container>
   );
