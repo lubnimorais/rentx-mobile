@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+
 import {
   getBottomSpace,
   getStatusBarHeight,
@@ -16,7 +17,7 @@ export const Header = styled.View`
   align-items: center;
 
   position: absolute;
-  margin-top: ${getStatusBarHeight() + 18}px;
+  margin-top: ${getStatusBarHeight() + 10}px;
   margin-left: 24px;
 `;
 
