@@ -10,7 +10,7 @@ import { api } from '../../services/api';
 
 import { BackButton } from '../../components/BackButton';
 import { Car } from '../../components/Car';
-import { Load } from '../../components/Load';
+import { LoadAnimated } from '../../components/LoadAnimation';
 
 import { ICarDTO } from '../../dtos/ICarDTO';
 
@@ -82,7 +82,7 @@ const MyCars: React.FC = () => {
       </Header>
 
       {loading ? (
-        <Load />
+        <LoadAnimated />
       ) : (
         <Content>
           <Appointments>
@@ -95,7 +95,7 @@ const MyCars: React.FC = () => {
           <AppointmentsList
             showsVerticalScrollIndicator={false}
             data={cars}
-            keyExtractor={item => item.id}
+            keyExtractor={item => String(item.id)}
             renderItem={({ item }) => (
               <CarWrapper>
                 <Car car={item.car} />

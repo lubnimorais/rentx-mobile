@@ -19,7 +19,11 @@ const StackRoutes: React.FC = () => (
     }}
   >
     <StackNavigator.Screen name="Splash" component={Splash} />
-    <StackNavigator.Screen name="Home" component={Home} />
+    <StackNavigator.Screen
+      name="Home"
+      component={Home}
+      options={{ gestureEnabled: false }}
+    />
     <StackNavigator.Screen name="CarDetails" component={CarDetails} />
     <StackNavigator.Screen name="Scheduling" component={Scheduling} />
     <StackNavigator.Screen
