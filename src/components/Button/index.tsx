@@ -9,7 +9,6 @@ import { Container, Title } from './styles';
 interface IProps extends RectButtonProps {
   title: string;
   color?: string;
-  enabled?: boolean;
   loading?: boolean;
   light?: boolean;
 }

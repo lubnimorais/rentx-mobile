@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { Splash } from '../screens/Splash';
 import { SignIn } from '../screens/SignIn';
+import { SignUpFirstStep } from '../screens/SignUp/SignUpFirstStep';
 import { Home } from '../screens/Home';
 import { CarDetails } from '../screens/CarDetails';
 import { Scheduling } from '../screens/Scheduling';
@@ -21,6 +22,7 @@ const StackRoutes: React.FC = () => (
   >
     <StackNavigator.Screen name="Splash" component={Splash} />
     <StackNavigator.Screen name="SignIn" component={SignIn} />
+    <StackNavigator.Screen name="SignUpFirstStep" component={SignUpFirstStep} />
     <StackNavigator.Screen
       name="Home"
       component={Home}

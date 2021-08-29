@@ -18,6 +18,8 @@ export const Container = styled(RectButton)<IContainerProps>`
   align-items: center;
 
   background-color: ${({ theme, color }) => color || theme.colors.main};
+
+  margin-bottom: 8px;
 `;
 
 export const Title = styled.Text<ITitleProps>`
