@@ -102,7 +102,12 @@ const SchedulingDetails: React.FC = () => {
         unavailable_dates,
       })
       .then(() => {
-        navigation.navigate('SchedulingComplete');
+        navigation.navigate('Confirmation', {
+          title: 'Carro alugado',
+          message: `Agora você só precisa ir
+            ${'\n'}até a concessionária da RENTX${'\n'}pegar seu automóvel`,
+          nextScreenRoute: 'Home',
+        });
       })
       .catch(() => {
         setLoading(false);

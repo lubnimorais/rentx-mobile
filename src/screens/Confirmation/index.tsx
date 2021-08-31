@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { StatusBar, useWindowDimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import LogoSvg from '../../assets/logo_background_gray.svg';
 import DoneSvg from '../../assets/done.svg';
@@ -9,14 +9,23 @@ import { ConfirmButton } from '../../components/ConfirmButton';
 
 import { Container, Content, Title, Message, Footer } from './styles';
 
-const SchedulingComplete: React.FC = () => {
+interface IRouteParams {
+  title: string;
+  message: string;
+  nextScreenRoute: string;
+}
+
+const Confirmation: React.FC = () => {
   const { width } = useWindowDimensions();
+
+  const route = useRoute();
+  const { title, message, nextScreenRoute } = route.params as IRouteParams;
 
   const navigation = useNavigation();
 
   const handleNavigationHome = useCallback(() => {
-    navigation.navigate('Home');
-  }, [navigation]);
+    navigation.navigate(nextScreenRoute);
+  }, [navigation, nextScreenRoute]);
 
   return (
     <Container>
@@ -30,13 +39,9 @@ const SchedulingComplete: React.FC = () => {
 
       <Content>
         <DoneSvg width={80} height={80} />
-        <Title>Carro alugado</Title>
+        <Title>{title}</Title>
 
-        <Message>
-          Agora você só precisa ir {'\n'}
-          até a concessionária da RENTX {'\n'}
-          pegar o seu automóvel
-        </Message>
+        <Message>{message}</Message>
 
         <Footer>
           <ConfirmButton title="OK" onPress={handleNavigationHome} />
@@ -46,4 +51,4 @@ const SchedulingComplete: React.FC = () => {
   );
 };
 
-export { SchedulingComplete };
+export { Confirmation };

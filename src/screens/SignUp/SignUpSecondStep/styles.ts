@@ -15,7 +15,7 @@ export const Header = styled.View`
   justify-content: space-between;
   align-items: center;
 
-  margin-top: ${getStatusBarHeight() + 21}px;
+  margin-top: ${getStatusBarHeight() + 31}px;
 `;
 
 export const Steps = styled.View`
@@ -28,7 +28,7 @@ export const Title = styled.Text`
   font-size: ${RFValue(40)}px;
   color: ${({ theme }) => theme.colors.title};
 
-  margin-top: ${RFValue(40)}px;
+  margin-top: ${RFValue(60)}px;
   margin-bottom: ${RFValue(16)}px;
 `;
 
