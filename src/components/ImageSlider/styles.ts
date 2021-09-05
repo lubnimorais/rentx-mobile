@@ -1,6 +1,11 @@
 import styled from 'styled-components/native';
 import { Dimensions, FlatList } from 'react-native';
 
+interface IImage {
+  id: string;
+  photo: string;
+}
+
 export const Container = styled.View`
   width: 100%;
 `;
@@ -19,7 +24,7 @@ export const CarImageWrapper = styled.View`
   align-items: center;
 `;
 
-export const CarImagesList = styled(FlatList as new () => FlatList)``;
+export const CarImagesList = styled(FlatList as new () => FlatList<IImage>)``;
 
 export const CarImage = styled.Image`
   width: 280px;

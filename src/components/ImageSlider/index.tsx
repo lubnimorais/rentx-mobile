@@ -11,8 +11,13 @@ import {
   CarImage,
 } from './styles';
 
+interface IImage {
+  id: string;
+  photo: string;
+}
+
 interface IProps {
-  imagesUrl: string[];
+  imagesUrl: Array<IImage>;
 }
 
 interface IChangeImageProps {
@@ -31,8 +36,8 @@ const ImageSlider: React.FC<IProps> = ({ imagesUrl }) => {
   return (
     <Container>
       <ImageIndexes>
-        {imagesUrl.map((_, index) => (
-          <Bullet key={String(index)} active={index === imageIndex} />
+        {imagesUrl.map((item, index) => (
+          <Bullet key={String(item.id)} active={index === imageIndex} />
         ))}
       </ImageIndexes>
 
@@ -40,10 +45,10 @@ const ImageSlider: React.FC<IProps> = ({ imagesUrl }) => {
         showsHorizontalScrollIndicator={false}
         horizontal
         data={imagesUrl}
-        keyExtractor={key => key}
-        renderItem={({ item: image }) => (
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
           <CarImageWrapper>
-            <CarImage source={{ uri: image }} resizeMode="contain" />
+            <CarImage source={{ uri: item.photo }} resizeMode="contain" />
           </CarImageWrapper>
         )}
         onViewableItemsChanged={indexChanged.current}

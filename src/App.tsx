@@ -13,6 +13,8 @@ import {
   Archivo_600SemiBold,
 } from '@expo-google-fonts/archivo';
 
+import { AppProvider } from './hooks';
+
 import theme from './styles/theme';
 
 import { Routes } from './routes';
@@ -32,7 +34,9 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <AppProvider>
+        <Routes />
+      </AppProvider>
     </ThemeProvider>
   );
 };

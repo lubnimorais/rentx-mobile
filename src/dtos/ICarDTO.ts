@@ -1,11 +1,12 @@
-interface IRent {
-  period: string;
-  price: number;
-}
-
 interface IAccessory {
+  id: string;
   type: string;
   name: string;
+}
+
+interface IPhoto {
+  id: string;
+  photo: string;
 }
 
 interface ICarDTO {
@@ -13,11 +14,12 @@ interface ICarDTO {
   brand: string;
   name: string;
   about: string;
-  rent: IRent;
+  period: string;
+  price: number;
   fuel_type: string;
   thumbnail: string;
   accessories: Array<IAccessory>;
-  photos: Array<string>;
+  photos: Array<IPhoto>;
 }
 
 export { ICarDTO };
