@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   StatusBar,
   KeyboardAvoidingView,
@@ -19,8 +19,6 @@ import { Input } from '../../components/Input';
 import { PasswordInput } from '../../components/PasswordInput';
 
 import { Container, Header, Title, Subtitle, Form, Footer } from './styles';
-
-import { database } from '../../database';
 
 const SignIn: React.FC = () => {
   const theme = useTheme();
@@ -60,16 +58,6 @@ const SignIn: React.FC = () => {
       }
     }
   }, [email, password, signIn]);
-
-  useEffect(() => {
-    async function loadData() {
-      const userCollection = database.get('users');
-      const user = await userCollection.query().fetch();
-      console.log(user);
-    }
-
-    loadData();
-  }, []);
 
   return (
     <KeyboardAvoidingView behavior="position" enabled>

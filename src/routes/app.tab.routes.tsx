@@ -9,7 +9,7 @@ import CarSvg from '../assets/car.svg';
 import PeopleSvg from '../assets/people.svg';
 
 import { AppStackRoutes } from './app.stack.routes';
-import { Home } from '../screens/Home';
+import { Profile } from '../screens/Profile';
 import { MyCars } from '../screens/MyCars';
 
 const BottomNavigator = createBottomTabNavigator();
@@ -51,7 +51,7 @@ const AppTabRoutes: React.FC = () => {
         options={{
           tabBarIcon: ({ color }) => <PeopleSvg fill={color} />,
         }}
-        component={Home}
+        component={Profile}
       />
     </BottomNavigator.Navigator>
   );

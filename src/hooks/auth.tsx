@@ -1,18 +1,28 @@
-import React, { useContext, createContext, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 
 import { api } from '../services/api';
 
+import { database } from '../database';
+import { User } from '../database/models/User';
+
 interface IUser {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   driver_license: string;
   avatar: string;
+  token: string;
 }
 
 interface IAuthState {
   user: IUser;
-  token: string;
 }
 
 interface ISignInCredentials {
@@ -33,16 +43,53 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const signIn = useCallback(
     async ({ email, password }: ISignInCredentials) => {
-      const response = await api.post('/sessions', { email, password });
+      try {
+        const response = await api.post('/sessions', { email, password });
 
-      const { token, user } = response.data as IAuthState;
+        const { token, user } = response.data;
 
-      api.defaults.headers.authorization = `Bearer ${token}`;
+        api.defaults.headers.authorization = `Bearer ${token}`;
 
-      setData({ token, user });
+        const userCollection = database.get<User>('users');
+        await database.write(async () => {
+          await userCollection.create(newUser => {
+            newUser.user_id = user.id;
+            newUser.name = user.name;
+            newUser.email = user.email;
+            newUser.driver_license = user.driver_license;
+            newUser.avatar = user.avatar;
+            newUser.token = token;
+          });
+        });
+
+        const userData = {
+          ...user,
+          token,
+        };
+
+        setData({ user: userData });
+      } catch (error) {
+        throw new Error('Erro ao realizar o login');
+      }
     },
     [],
   );
+
+  useEffect(() => {
+    async function loadUserData() {
+      const userCollection = database.get<User>('users');
+      const response = await userCollection.query().fetch();
+
+      if (response.length > 0) {
+        const userData = response[0]._raw as unknown as IUser;
+
+        api.defaults.headers.authorization = `Bearer ${userData.token}`;
+        setData({ user: userData });
+      }
+    }
+
+    loadUserData();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user: data.user, signIn }}>

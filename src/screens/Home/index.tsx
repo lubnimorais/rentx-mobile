@@ -28,21 +28,30 @@ const Home: React.FC = () => {
     [navigation],
   );
 
-  const fetchCars = useCallback(async () => {
-    try {
-      const response = await api.get('/cars');
-
-      setCars(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    let isMounted = true;
+
+    async function fetchCars() {
+      try {
+        const response = await api.get('/cars');
+
+        if (isMounted) {
+          setCars(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
     fetchCars();
-  }, [fetchCars]);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Container>
