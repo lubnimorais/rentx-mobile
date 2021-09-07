@@ -50,6 +50,7 @@ const PasswordInput: React.FC<IInputProps> = ({ iconName, value, ...rest }) => {
         isFocused={isFocused}
         onFocus={handleIsFocused}
         onBlur={handleIsFilled}
+        autoCorrect={false}
         {...rest}
       />
 
