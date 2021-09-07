@@ -33,7 +33,8 @@ interface ISignInCredentials {
 interface IAuthContextData {
   user: IUser;
   signIn: ({ email, password }: ISignInCredentials) => Promise<void>;
-  // signOut: () => void;
+  signOut: () => Promise<void>;
+  updatedUser: (user: IUser) => Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
@@ -52,7 +53,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
         const userCollection = database.get<User>('users');
         await database.write(async () => {
-          await userCollection.create(newUser => {
+          const responseUser = await userCollection.create(newUser => {
             newUser.user_id = user.id;
             newUser.name = user.name;
             newUser.email = user.email;
@@ -60,20 +61,54 @@ const AuthProvider: React.FC = ({ children }) => {
             newUser.avatar = user.avatar;
             newUser.token = token;
           });
+
+          const userInserted = responseUser._raw as unknown as IUser;
+
+          const userData = {
+            ...userInserted,
+            token,
+          };
+
+          setData({ user: userData });
         });
-
-        const userData = {
-          ...user,
-          token,
-        };
-
-        setData({ user: userData });
       } catch (error) {
         throw new Error('Erro ao realizar o login');
       }
     },
     [],
   );
+
+  const signOut = useCallback(async () => {
+    try {
+      const userCollection = database.get<User>('users');
+      await database.write(async () => {
+        const userSelected = await userCollection.find(data.user.id);
+        await userSelected.destroyPermanently();
+      });
+
+      setData({} as IAuthState);
+    } catch (error) {
+      throw new Error('Não foi possível fazer o logout');
+    }
+  }, [data.user]);
+
+  const updatedUser = useCallback(async (user: IUser) => {
+    try {
+      const userCollection = database.get<User>('users');
+      await database.write(async () => {
+        const userSelected = await userCollection.find(user.id);
+        await userSelected.update(userData => {
+          userData.name = user.name;
+          userData.driver_license = user.driver_license;
+          userData.avatar = user.avatar;
+        });
+
+        setData({ user });
+      });
+    } catch (error) {
+      throw new Error('Não foi possível atualizar os dados');
+    }
+  }, []);
 
   useEffect(() => {
     async function loadUserData() {
@@ -92,7 +127,9 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, updatedUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

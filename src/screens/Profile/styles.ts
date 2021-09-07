@@ -111,4 +111,6 @@ export const OptionTitle = styled.Text<IOptionProps>`
     active ? theme.colors.header : theme.colors.text_detail};
 `;
 
-export const Section = styled.View``;
+export const Section = styled.View`
+  margin-bottom: 10px;
+`;

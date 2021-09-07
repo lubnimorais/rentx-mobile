@@ -3,19 +3,25 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
+import { useNavigation } from '@react-navigation/native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
+import * as ImagePicker from 'expo-image-picker';
 
 import { useTheme } from 'styled-components';
 
 import { Feather } from '@expo/vector-icons';
 
+import * as Yup from 'yup';
+
 import { useAuth } from '../../hooks/auth';
 
 import { BackButton } from '../../components/BackButton';
 import { Input } from '../../components/Input';
+import { Button } from '../../components/Button';
 import { PasswordInput } from '../../components/PasswordInput';
 
 import PeopleSvg from '../../assets/people.svg';
@@ -37,9 +43,12 @@ import {
 } from './styles';
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, signOut, updatedUser } = useAuth();
 
   const [option, setOption] = useState<'dataEdit' | 'passwordEdit'>('dataEdit');
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [name, setName] = useState(user.name);
+  const [driverLicense, setDriverLicense] = useState(user.driver_license);
 
   const navigation = useNavigation();
   const theme = useTheme();
@@ -48,7 +57,25 @@ const Profile: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
-  const handleSignOut = useCallback(() => {}, []);
+  const handleSignOut = useCallback(async () => {
+    Alert.alert(
+      'Tem certeza?',
+      'Se você sair, irá precisar de internet para conectar-se novamente',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Sair',
+          onPress: async () => {
+            await signOut();
+          },
+        },
+      ],
+    );
+  }, [signOut]);
 
   const handleOptionChange = useCallback(
     (optionSelected: 'dataEdit' | 'passwordEdit') => {
@@ -56,6 +83,54 @@ const Profile: React.FC = () => {
     },
     [],
   );
+
+  const handleAvatarSelect = useCallback(async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (result.cancelled) {
+      return;
+    }
+
+    if (result.uri) {
+      setAvatar(result.uri);
+    }
+  }, []);
+
+  const handleProfileUpdate = useCallback(async () => {
+    try {
+      const schema = Yup.object().shape({
+        driverLicense: Yup.string().required('CNH obrigatória'),
+        name: Yup.string().required('Nome obrigatório'),
+      });
+
+      const data = { name, driverLicense };
+      await schema.validate(data);
+
+      await updatedUser({
+        id: user.id,
+        user_id: user.user_id,
+        name,
+        email: user.email,
+        driver_license: driverLicense,
+        avatar,
+        token: user.token,
+      });
+
+      Alert.alert('Perfil atualizado!');
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        Alert.alert('Opa', error.message);
+        return;
+      }
+
+      Alert.alert('Não foi possível atualizar o perfil');
+    }
+  }, [driverLicense, name, avatar, updatedUser, user]);
 
   return (
     <KeyboardAvoidingView behavior="position" enabled>
@@ -71,10 +146,10 @@ const Profile: React.FC = () => {
             </HeaderTop>
 
             <PhotoContainer>
-              {user.avatar !== null ? (
+              {avatar !== null && avatar !== '' ? (
                 <Photo
                   source={{
-                    uri: user.avatar,
+                    uri: avatar,
                   }}
                 />
               ) : (
@@ -86,7 +161,7 @@ const Profile: React.FC = () => {
                 />
               )}
 
-              <PhotoButton>
+              <PhotoButton onPress={handleAvatarSelect}>
                 <Feather name="camera" size={24} color={theme.colors.shape} />
               </PhotoButton>
             </PhotoContainer>
@@ -116,8 +191,10 @@ const Profile: React.FC = () => {
                 <Input
                   iconName="user"
                   placeholder="Nome"
-                  defaultValue={user.name}
+                  defaultValue={name}
                   autoCorrect={false}
+                  value={name}
+                  onChangeText={setName}
                 />
 
                 <Input
@@ -131,7 +208,9 @@ const Profile: React.FC = () => {
                   iconName="credit-card"
                   placeholder="CNH"
                   keyboardType="numeric"
-                  defaultValue={user.driver_license}
+                  defaultValue={driverLicense}
+                  value={driverLicense}
+                  onChangeText={setDriverLicense}
                 />
               </Section>
             ) : (
@@ -143,6 +222,8 @@ const Profile: React.FC = () => {
                 <PasswordInput iconName="lock" placeholder="Repetir senha" />
               </Section>
             )}
+
+            <Button title="Salvar alterações" onPress={handleProfileUpdate} />
           </Content>
         </Container>
       </TouchableWithoutFeedback>
