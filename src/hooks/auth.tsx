@@ -82,7 +82,9 @@ const AuthProvider: React.FC = ({ children }) => {
     try {
       const userCollection = database.get<User>('users');
       await database.write(async () => {
-        const userSelected = await userCollection.find(data.user.id);
+        // forma pela aula
+        // const userSelected = await userCollection.find(data.user.id);
+        const userSelected = await userCollection.find(data.user.user_id);
         await userSelected.destroyPermanently();
       });
 
