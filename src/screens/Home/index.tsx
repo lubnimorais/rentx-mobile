@@ -48,11 +48,16 @@ const Home: React.FC = () => {
 
         const { changes, latestVersion } = response.data;
 
+        // console.log('### SINCRONIZAÇÃO ###');
+        // console.log(latestVersion);
+        // console.log(changes);
+
         return { changes, timestamp: latestVersion };
       },
       pushChanges: async ({ changes }) => {
         const user = changes.users;
-        await api.post('users/sync', user);
+        // console.log('### ERRO """"');
+        await api.post('users/sync', user).catch(console.log);
       },
     });
   }, []);

@@ -32,6 +32,7 @@ interface ISignInCredentials {
 
 interface IAuthContextData {
   user: IUser;
+  loading: boolean;
   signIn: ({ email, password }: ISignInCredentials) => Promise<void>;
   signOut: () => Promise<void>;
   updatedUser: (user: IUser) => Promise<void>;
@@ -41,6 +42,7 @@ const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<IAuthState>({} as IAuthState);
+  const [loading, setLoading] = useState(true);
 
   const signIn = useCallback(
     async ({ email, password }: ISignInCredentials) => {
@@ -122,6 +124,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
         api.defaults.headers.authorization = `Bearer ${userData.token}`;
         setData({ user: userData });
+        setLoading(false);
       }
     }
 
@@ -130,7 +133,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updatedUser }}
+      value={{ user: data.user, loading, signIn, signOut, updatedUser }}
     >
       {children}
     </AuthContext.Provider>
