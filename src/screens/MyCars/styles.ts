@@ -3,14 +3,13 @@ import { FlatList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
-import { ICarDTO } from '../../dtos/ICarDTO';
+import { Car as CarModel } from '../../database/model/Car';
 
-interface IAppointmentsCarProps {
+interface ICarProps {
   id: string;
-  user_id: string;
-  car: ICarDTO;
-  startDate: string;
-  endDate: string;
+  car: CarModel;
+  start_date: string;
+  end_date: string;
 }
 
 export const Container = styled.View`
@@ -77,7 +76,7 @@ export const AppointmentsQuantity = styled.Text`
 `;
 
 export const AppointmentsList = styled(
-  FlatList as new () => FlatList<IAppointmentsCarProps>,
+  FlatList as new () => FlatList<ICarProps>,
 )``;
 
 export const CarWrapper = styled.View`

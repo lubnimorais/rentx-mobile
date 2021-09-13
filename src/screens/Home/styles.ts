@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { Car } from '../../database/models/Car';
+import { Car } from '../../database/model/Car';
 
 export const Container = styled.View`
   flex: 1;

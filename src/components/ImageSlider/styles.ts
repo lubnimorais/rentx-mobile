@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { Dimensions, FlatList } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 interface IImage {
   id: string;
@@ -26,7 +27,7 @@ export const CarImageWrapper = styled.View`
 
 export const CarImagesList = styled(FlatList as new () => FlatList<IImage>)``;
 
-export const CarImage = styled.Image`
+export const CarImage = styled(FastImage)`
   width: 280px;
   height: 132px;
 `;

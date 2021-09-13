@@ -8,7 +8,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { synchronize } from '@nozbe/watermelondb/sync';
 import { database } from '../../database';
 
-import { Car as CarModel } from '../../database/models/Car';
+import { Car as CarModel } from '../../database/model/Car';
 
 import { api } from '../../services/api';
 

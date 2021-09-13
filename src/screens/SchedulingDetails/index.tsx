@@ -3,6 +3,8 @@ import { Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 
+import { useNetInfo } from '@react-native-community/netinfo';
+
 import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -64,42 +66,30 @@ const SchedulingDetails: React.FC = () => {
     {} as IRentalPeriod,
   );
   const [loading, setLoading] = useState(false);
+  const [carUpdated, setCarUpdated] = useState<ICarDTO>({} as ICarDTO);
 
   const navigation = useNavigation();
   const theme = useTheme();
+  const netInfo = useNetInfo();
 
   const rentalTotal = useMemo(() => {
-    return Number(dates.length) * car.rent.price;
-  }, [car.rent.price, dates.length]);
+    return Number(dates.length) * car.price;
+  }, [car.price, dates.length]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const handleNavigationSchedulingComplete = useCallback(async () => {
+  const handleConfirmRental = useCallback(async () => {
     setLoading(true);
 
-    const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`);
-
-    const unavailable_dates = [
-      ...schedulesByCar.data.unavailable_dates,
-      ...dates,
-    ];
-
-    await api.post(`/schedules_byuser`, {
-      user_id: 1,
-      car,
-      startDate: format(getPlatformDate(new Date(dates[0])), 'dd/MM/yyy'),
-      endDate: format(
-        getPlatformDate(new Date(dates[dates.length - 1])),
-        'dd/MM/yyy',
-      ),
-    });
-
-    api
-      .put(`/schedules_bycars/${car.id}`, {
-        id: car.id,
-        unavailable_dates,
+    await api
+      .post(`rentals`, {
+        user_id: 1,
+        car_id: car.id,
+        start_date: new Date(dates[0]),
+        end_date: new Date(dates[dates.length - 1]),
+        total: rentalTotal,
       })
       .then(() => {
         navigation.navigate('Confirmation', {
@@ -113,7 +103,7 @@ const SchedulingDetails: React.FC = () => {
         setLoading(false);
         Alert.alert('Não foi possível confirmar o agendamento');
       });
-  }, [navigation, car, dates]);
+  }, [navigation, car, dates, rentalTotal]);
 
   useEffect(() => {
     setRentalPeriod({
@@ -125,6 +115,17 @@ const SchedulingDetails: React.FC = () => {
     });
   }, [dates]);
 
+  useEffect(() => {
+    async function fetchCarUpdated() {
+      const response = await api.get(`cars/${car.id}`);
+      setCarUpdated(response.data);
+    }
+
+    if (netInfo.isConnected === true) {
+      fetchCarUpdated();
+    }
+  }, [car.id, netInfo.isConnected]);
+
   return (
     <Container>
       <Header>
@@ -132,7 +133,13 @@ const SchedulingDetails: React.FC = () => {
       </Header>
 
       <CarImages>
-        <ImageSlider imagesUrl={car.photos} />
+        <ImageSlider
+          imagesUrl={
+            carUpdated.photos
+              ? carUpdated.photos
+              : [{ id: car.thumbnail, photo: car.thumbnail }]
+          }
+        />
       </CarImages>
 
       <Content>
@@ -143,20 +150,22 @@ const SchedulingDetails: React.FC = () => {
           </Description>
 
           <Rent>
-            <Period>{car.rent.period}</Period>
-            <Price>R$ {car.rent.price}</Price>
+            <Period>{car.period}</Period>
+            <Price>R$ {car.price}</Price>
           </Rent>
         </Details>
 
-        <Accessories>
-          {car.accessories.map(accessory => (
-            <Accessory
-              key={accessory.type}
-              name={accessory.name}
-              icon={getAccessoryIcon(accessory.type)}
-            />
-          ))}
-        </Accessories>
+        {carUpdated.accessories && (
+          <Accessories>
+            {carUpdated.accessories.map(accessory => (
+              <Accessory
+                key={accessory.type}
+                name={accessory.name}
+                icon={getAccessoryIcon(accessory.type)}
+              />
+            ))}
+          </Accessories>
+        )}
 
         <RentalPeriod>
           <CalendarIcon>
@@ -188,7 +197,7 @@ const SchedulingDetails: React.FC = () => {
           <RentalPriceLabel>TOTAL</RentalPriceLabel>
           <RentalPriceDetails>
             <RentalPriceQuota>
-              {`R$ ${car.rent.price} x${dates.length} diárias`}
+              {`R$ ${car.price} x${dates.length} diárias`}
             </RentalPriceQuota>
             <RentalPriceTotal>R$ {rentalTotal}</RentalPriceTotal>
           </RentalPriceDetails>
@@ -199,7 +208,7 @@ const SchedulingDetails: React.FC = () => {
         <Button
           title="Alugar agora"
           color={theme.colors.success}
-          onPress={handleNavigationSchedulingComplete}
+          onPress={handleConfirmRental}
           enabled={!loading}
           loading={loading}
         />

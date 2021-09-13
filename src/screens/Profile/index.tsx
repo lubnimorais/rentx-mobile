@@ -4,14 +4,15 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Alert,
+  StatusBar,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useTheme } from 'styled-components';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 import * as ImagePicker from 'expo-image-picker';
-
-import { useTheme } from 'styled-components';
 
 import { Feather } from '@expo/vector-icons';
 
@@ -52,6 +53,7 @@ const Profile: React.FC = () => {
 
   const navigation = useNavigation();
   const theme = useTheme();
+  const netInfo = useNetInfo();
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -79,9 +81,16 @@ const Profile: React.FC = () => {
 
   const handleOptionChange = useCallback(
     (optionSelected: 'dataEdit' | 'passwordEdit') => {
-      setOption(optionSelected);
+      if (netInfo.isConnected === false && optionSelected === 'passwordEdit') {
+        Alert.alert(
+          'Você está Offline',
+          'Para mudar a senha conecte-se a internet',
+        );
+      } else {
+        setOption(optionSelected);
+      }
     },
-    [],
+    [netInfo.isConnected],
   );
 
   const handleAvatarSelect = useCallback(async () => {
@@ -136,6 +145,12 @@ const Profile: React.FC = () => {
     <KeyboardAvoidingView behavior="position" enabled>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Container>
+          <StatusBar
+            barStyle="light-content"
+            translucent
+            backgroundColor="transparent"
+          />
+
           <Header>
             <HeaderTop>
               <BackButton color={theme.colors.shape} onPress={handleBack} />

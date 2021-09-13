@@ -9,7 +9,7 @@ import React, {
 import { api } from '../services/api';
 
 import { database } from '../database';
-import { User } from '../database/models/User';
+import { User } from '../database/model/User';
 
 interface IUser {
   id: string;
@@ -124,8 +124,9 @@ const AuthProvider: React.FC = ({ children }) => {
 
         api.defaults.headers.authorization = `Bearer ${userData.token}`;
         setData({ user: userData });
-        setLoading(false);
       }
+
+      setLoading(false);
     }
 
     loadUserData();
